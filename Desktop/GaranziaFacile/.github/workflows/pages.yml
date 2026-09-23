@@ -1,0 +1,52 @@
+name: Deploy Privacy Policy to GitHub Pages
+
+# Questo workflow pubblica automaticamente la Privacy Policy HTML
+# quando un file viene pushato sul branch 'main' o quando il file
+# privacy-policy.html viene aggiornato.
+#
+# Prima di usare:
+# 1. Assicurati che il repository sia su github.com/USERNAME/REPO
+# 2. Vai su Settings → Pages → Build and deployment → Source: GitHub Actions
+# 3. Il workflow creerà automaticamente il sito
+#
+# URL risultante (user pages):  https://USERNAME.github.io/REPO/privacy-policy.html
+# URL risultante (org/project pages): https://USERNAME.github.io/REPO/privacy-policy.html
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'privacy-policy.html'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  pages: write
+  id-token: write
+
+concurrency:
+  zone: github-pages
+  key: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        with:
+          publish_dir: '.'
+          # Only publish privacy-policy.html
+          # The root is used so the URL is clean: /privacy-policy.html
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: privacy-policy.html
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
