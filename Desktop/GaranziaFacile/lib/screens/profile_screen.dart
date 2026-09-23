@@ -223,13 +223,20 @@ class ProfileScreen extends StatelessWidget {
               subtitle: 'Ripristina i dati da un file JSON',
               onTap: () => _import(context),
             ),
-              _LinkTile(
+            const Padding(
+              padding: EdgeInsets.only(left: 58, right: 16, top: 4),
+              child: Text(
+                'Nota: il backup JSON contiene solo i metadati (prodotti, reclami, impostazioni). '
+                'Allegati fisici (foto, PDF) non sono inclusi: tieni una copia separata dei documenti.',
+                style: TextStyle(fontSize: 11, fontStyle: FontStyle.italic, height: 1.4),
+              ),
+            ),
+            _LinkTile(
               icon: Icons.delete_forever_outlined,
               title: 'Elimina tutti i dati',
               subtitle: 'Cancellazione definitiva e irreversibile',
               onTap: () => _showDeleteConfirmation(context),
             ),
-            const SizedBox(height: 14),
             GFSectionHeader(title: 'Supporto'),
             _LinkTile(
               icon: Icons.feedback_outlined,

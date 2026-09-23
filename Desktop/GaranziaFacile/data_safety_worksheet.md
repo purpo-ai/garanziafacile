@@ -97,6 +97,22 @@ Questo worksheet è basato su:
 
 ---
 
+## 4. Permessi Android
+
+| Permesso | Richiesto? | Finalità | Dati trasmessi |
+|---|---|---|---|
+| `CAMERA` | SÌ | Scansione barcode, acquisizione immagini | NO — elaborazione locale |
+| `POST_NOTIFICATIONS` | SÌ (Android 13+/API 33+) | Promemoria scadenze garanzia (notifiche locali) | NO — nessun dato inviato |
+| `INTERNET` | NO (solo debug/profile) | Sviluppo | N/A — non presente in release |
+
+### Note su POST_NOTIFICATIONS
+
+- Android 13+ richiede `POST_NOTIFICATIONS` per tutte le notifiche, inclusse locali
+- L'app lo richiede a runtime tramite `flutter_local_notifications`
+- Nessun dato personale viene trasmesso tramite le notifiche
+
+---
+
 ## 5. Compilazione Data Safety — schema di risposta
 
 Questo è ciò che andrà compilato nella **Play Console → Data Safety**:
