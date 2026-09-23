@@ -259,7 +259,7 @@ class ProfileScreen extends StatelessWidget {
       await file.writeAsString(json, flush: true);
       if (context.mounted) {
         gfHaptic(type: GFHaptic.medium);
-        gfSnack(context, 'Backup salvato in:\n${file.path}');
+         gfSnack(context, 'Backup salvato in:\n${file.path}\nConserva il file in un luogo sicuro.');
       }
     } catch (e) {
       if (context.mounted) {
@@ -343,7 +343,7 @@ class ProfileScreen extends StatelessWidget {
       builder: (context) => AlertDialog(
         title: const Text('Elimina tutti i dati'),
         content: const Text(
-          'Sei sicuro di voler procedere? Questa azione cancellerà definitivamente ed in modo irreversibile tutti i tuoi dati salvati sul dispositivo (prodotti, ricevute, allegati, reclami e impostazioni), in conformità con il GDPR (Art. 17) e le linee guida Google Play. L\u2019applicazione verrà reimpostata allo stato iniziale.',
+          'Sei sicuro di voler procedere? Questa azione cancellerà definitivamente ed in modo irreversibile tutti i tuoi dati salvati sul dispositivo (prodotti, ricevute, allegati, reclami e impostazioni), in conformità con il GDPR (Art. 17) e le linee guida Google Play. L\u2019applicazione verrà reimpostata allo stato iniziale.\n\nNota: la cancellazione dall\u2019app non rimuove copie di backup JSON o allegati che hai esportato e salvato al di fuori dell\u2019app (es. nella cartella Download).',
         ),
         actions: [
           TextButton(

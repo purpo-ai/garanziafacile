@@ -60,6 +60,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   ProductCategory _category = ProductCategory.altro;
   late DateTime _purchaseDate;
+  DateTime? _deliveryDate;
+  SellerType _sellerType = SellerType.professional;
+  AcquisitionType _acquisitionType = AcquisitionType.personal;
   late _Stage _stage;
   _Stage get _effectiveStage {
     if (widget.product != null) return _Stage.form;
@@ -93,6 +96,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
     _category = p?.category ?? ProductCategory.altro;
     _purchaseDate = p?.purchaseDate ?? DateTime.now();
+    _deliveryDate = p?.deliveryDate;
+    _sellerType = p?.sellerType ?? SellerType.professional;
+    _acquisitionType = p?.acquisitionType ?? AcquisitionType.personal;
 
     final cat = widget.catalogEntry;
     if (cat != null) {
@@ -270,6 +276,19 @@ class _AddProductScreenState extends State<AddProductScreen> {
     }
   }
 
+  Future<void> _pickDeliveryDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _deliveryDate ?? _purchaseDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+      helpText: 'Data di consegna',
+    );
+    if (picked != null) {
+      setState(() => _deliveryDate = picked);
+    }
+  }
+
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
     final state = context.read<AppState>();
@@ -291,10 +310,13 @@ class _AddProductScreenState extends State<AddProductScreen> {
       serialNumber:
           _serial.text.trim().isEmpty ? null : _serial.text.trim(),
       purchaseDate: _purchaseDate,
+      deliveryDate: _deliveryDate,
       price: price,
       seller: _seller.text.trim(),
       sellerAddress:
           _sellerAddress.text.trim().isEmpty ? null : _sellerAddress.text.trim(),
+      sellerType: _sellerType,
+      acquisitionType: _acquisitionType,
       notes: _notes.text.trim().isEmpty ? null : _notes.text.trim(),
       commercialWarrantyMonths: int.tryParse(_commercialMonths.text.trim()),
       commercialWarrantyProvider: _commercialProvider.text.trim().isEmpty
@@ -673,7 +695,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 InkWell(
                   onTap: _pickDate,
                   borderRadius: BorderRadius.circular(12),
-                  child: InputDecorator(
+                     child: InputDecorator(
                     decoration: const InputDecoration(
                       labelText: 'Data di acquisto *',
                       prefixIcon: Icon(Icons.calendar_today_outlined),
@@ -683,6 +705,57 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       style: AppTypography.body,
                     ),
                   ),
+                ),
+                const SizedBox(height: 12),
+                InkWell(
+                  onTap: _pickDeliveryDate,
+                  borderRadius: BorderRadius.circular(12),
+                  child: InputDecorator(
+                    decoration: InputDecoration(
+                      labelText: 'Data di consegna',
+                      prefixIcon: Icon(Icons.local_shipping_outlined),
+                      helperText: 'La garanzia legale decorre dalla consegna',
+                    ),
+                    child: Text(
+                      _deliveryDate != null
+                          ? DateFormat('dd/MM/yyyy').format(_deliveryDate!)
+                          : 'Non inserita (si usa data acquisto)',
+                      style: AppTypography.body.copyWith(
+                        color: _deliveryDate != null
+                            ? null
+                            : AppColors.textMuted,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                DropdownButtonFormField<SellerType>(
+                  initialValue: _sellerType,
+                  decoration: const InputDecoration(
+                    labelText: 'Tipo di venditore',
+                    prefixIcon: Icon(Icons.person_outlined),
+                  ),
+                  items: SellerType.values
+                      .map((s) => DropdownMenuItem(
+                            value: s, child: Text(s.label)))
+                      .toList(),
+                  onChanged: (v) => setState(() => _sellerType = v!),
+                ),
+                const SizedBox(height: 12),
+                DropdownButtonFormField<AcquisitionType>(
+                  initialValue: _acquisitionType,
+                  decoration: const InputDecoration(
+                    labelText: 'Tipo di acquisto',
+                    prefixIcon: Icon(Icons.shopping_basket_outlined),
+                    helperText:
+                        'Per uso personale = garanzia consumatore',
+                  ),
+                  items: AcquisitionType.values
+                      .map((a) => DropdownMenuItem(
+                            value: a, child: Text(a.label)))
+                      .toList(),
+                  onChanged: (v) =>
+                      setState(() => _acquisitionType = v!),
                 ),
                 const SizedBox(height: 12),
                 Row(
